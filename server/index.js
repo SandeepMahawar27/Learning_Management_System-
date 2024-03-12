@@ -15,7 +15,7 @@ const fileUpload = require("express-fileupload");
 const dotenv = require("dotenv");
 dotenv.config(); 
 const PORT = process.env.PORT || 4000;
-
+ 
 ///database connect  
 database.dbConnect(); 
 //middlewares
@@ -23,10 +23,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use( 
 	cors({
-		origin:"http://localhost:3000",
-		credentials:true,
+		origin: ["deployed-vercel-frontend-app","localhost:3000"],
+        methods: ["POST", "GET"], 
+        credentials: true
 	})
-) 
+)     
 
 app.use(
     fileUpload({
