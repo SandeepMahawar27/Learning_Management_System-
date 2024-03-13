@@ -9,7 +9,8 @@ export default function EnrolledCourses() {
   const { token } = useSelector((state) => state.auth)
   const navigate = useNavigate()
 
-  const [enrolledCourses, setEnrolledCourses] = useState(null)
+  const [enrolledCourses, setEnrolledCourses] = useState(null);
+  
   const getEnrolledCourses = async () => {
     try {
       const res = await getUserEnrolledCourses(token);
