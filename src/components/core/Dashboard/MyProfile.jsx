@@ -4,10 +4,20 @@ import { useNavigate } from "react-router-dom"
 
 import { formattedDate } from "../../../utils/dateFormatter"
 import IconBtn from "../../common/IconBtn"
+import { useEffect } from "react"
 
 export default function MyProfile() {
   const { user } = useSelector((state) => state.profile)
   const navigate = useNavigate(); 
+
+  useEffect(() => {
+    const fetchdata = async() => {
+      const res = await user.additionalDetails;
+      console.log(res.about);
+    }
+    fetchdata();
+  }, [])
+  
 
   return ( 
     <>

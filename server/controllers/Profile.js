@@ -2,38 +2,45 @@ const Profile = require("../models/Profile")
 const CourseProgress = require("../models/CourseProgress")
 const Course = require("../models/Course")
 const User = require("../models/User")
-const { uploadImageToCloudinary } = require("../utils/imageUploder")
-const mongoose = require("mongoose")
-const { convertSecondsToDuration } = require("../utils/secToDuration")
+const { uploadImageToCloudinary } = require("../utils/imageUploder");
+const mongoose = require("mongoose");
+const { convertSecondsToDuration } = require("../utils/secToDuration");
 
 // Method for updating a profile
 exports.updateProfile = async (req, res) => {
   try {
     const {
-      firstName = "",
-      lastName = "",
-      dateOfBirth = "",
-      about = "",
-      contactNumber = "",
-      gender = "",
-    } = req.body
-    const id = req.user.id
-
-    // Find the profile by id
-    const userDetails = await User.findById(id)
-    const profile = await Profile.findById(userDetails.additionalDetails)
-
-    const user = await User.findByIdAndUpdate(id, {
       firstName,
       lastName,
-    })
-    await user.save()
+      dateOfBirth,
+      about,
+      contactNumber,
+      gender,
+    } = req.body;
+    const id = req.user.id;
 
-    // Update the profile fields
-    profile.dateOfBirth = dateOfBirth
-    profile.about = about
-    profile.contactNumber = contactNumber
-    profile.gender = gender
+    // Check if required fields are provided
+    if (!firstName || !lastName) {
+      return res.status(400).json({
+        success: false,
+        error: "firstName and lastName are required fields.",
+      });
+    }
+
+    // Find the profile by id
+    const userDetails = await User.findById(id);
+    const profile = await Profile.findById(userDetails.additionalDetails);
+
+    // Update user details
+    userDetails.firstName = firstName;
+    userDetails.lastName = lastName;
+    await userDetails.save();
+
+    // Update profile fields
+    profile.dateOfBirth = dateOfBirth;
+    profile.about = about;
+    profile.contactNumber = contactNumber;
+    profile.gender = gender;
 
     // Save the updated profile
     await profile.save();
@@ -41,21 +48,21 @@ exports.updateProfile = async (req, res) => {
     // Find the updated user details
     const updatedUserDetails = await User.findById(id)
       .populate("additionalDetails")
-      .exec()
+      .exec();
 
     return res.json({
       success: true,
       message: "Profile updated successfully",
       updatedUserDetails,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       success: false,
-      error: error.message,
-    })
+      error: "Failed to update profile",
+    });
   }
-}
+};
 
 exports.deleteAccount = async (req, res) => {
   try {
